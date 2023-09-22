@@ -16,16 +16,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-admin_urls = [
-    path('api/admin/catalog/', include(('djshop.apps.catalog.urls.admin', 'djshop.apps.catalog'), namespace='catalog-admin'))
+admin_url = [
+    path('api/admin/catalog/', include(('djshop.apps.catalog.urls.admin', 'djshop.apps.catalog'), namespace='catalog'
+                                                                                                            '-admin'))
 ]
 
-front_urls =[
-    path('api/front/catalog/', include(('djshop.apps.catalog.urls.front', 'djshop.apps.catalog'), namespace='catalog-front'))
+front_url = [
+    path('api/front/catalog/', include(('djshop.apps.catalog.urls.front', 'djshop.apps.catalog'), namespace='catalog'
+                                                                                                            '-front'))
 ]
-
 
 doc_patterns = [
     # YOUR PATTERNS
@@ -36,15 +37,5 @@ doc_patterns = [
 ]
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-] + front_urls + admin_urls + doc_patterns
-
-admin.site.site_title= "DjShop"
-admin.site.index_title= "DjShop"
-admin.site.site_header= "DjShop"
-
-
-
-
-
-
+                  path("admin/", admin.site.urls),
+              ] + front_url + admin_url + doc_patterns

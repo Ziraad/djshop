@@ -8,7 +8,7 @@ COPY ./src /src
 WORKDIR src
 
 EXPOSE 8000
-
+RUN pip install --upgrade pip
 RUN /py/bin/pip install -r /requirements/development.txt
 
 # RUN apk add  geos gdal

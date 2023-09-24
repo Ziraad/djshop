@@ -119,8 +119,11 @@ class Product(models.Model):
     structure = models.CharField(max_length=16, choices=ProductTypeChoice.choices, default=ProductTypeChoice.standalone)
     parent = models.ForeignKey("self", related_name="children", on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=128, null=True, blank=True)
+    # universal product code
+    # use custom field UpperCaseCharFiled > import from djshop.libs.db.field
     upc = UpperCaseCharField(max_length=24, unique=True, null=True, blank=True)
     is_public = models.BooleanField(default=True)
+    # for seo
     meta_title = models.CharField(max_length=128, null=True, blank=True)
     meta_description = models.TextField(null=True, blank=True)
 
@@ -129,6 +132,7 @@ class Product(models.Model):
     product_class = models.ForeignKey(ProductClass, on_delete=models.PROTECT, null=True, blank=True,
                                       related_name='products')
     attributes = models.ManyToManyField(ProductAttribute, through='ProductAttributeValue')
+    recommended_products = models.ManyToManyField('catalog.Product', through='ProductRecommendation', blank=True)
 
     class Meta:
         verbose_name = "Product"
@@ -150,3 +154,13 @@ class ProductAttributeValue(models.Model):
         verbose_name = "Attribute Value"
         verbose_name_plural = "Attribute Values"
         unique_together = ('product', 'attribute')
+
+
+class ProductRecommendation(models.Model):
+    primary = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='primary_recommendation')
+    recommendation = models.ForeignKey(Product, on_delete=models.CASCADE)
+    rank = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('primary', 'recommendation')
+        ordering = ('primary', '-rank')

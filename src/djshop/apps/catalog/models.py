@@ -134,6 +134,7 @@ class Product(AuditableModel):
                                       related_name='products')
     attributes = models.ManyToManyField(ProductAttribute, through='ProductAttributeValue')
     recommended_products = models.ManyToManyField('catalog.Product', through='ProductRecommendation', blank=True)
+    categories = models.ManyToManyField(Category, related_name='categories')
 
     @property
     def main_image(self):
@@ -145,6 +146,9 @@ class Product(AuditableModel):
     class Meta:
         verbose_name = "Product"
         verbose_name_plural = "Products"
+
+    def __str__(self):
+        return self.title
 
 
 class ProductAttributeValue(models.Model):
@@ -180,7 +184,7 @@ class ProductImage(models.Model):
     display_order = models.PositiveIntegerField(default=0)
 
     class Meta:
-        ordering = ('display_order', )
+        ordering = ('display_order',)
 
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)

@@ -3,7 +3,8 @@ from django.db.models import Count
 from treebeard.admin import TreeAdmin
 from treebeard.forms import movenodeform_factory
 
-from djshop.apps.catalog.models import Category, ProductClass, Option, ProductAttribute, ProductRecommendation
+from djshop.apps.catalog.models import Category, ProductClass, Option, ProductAttribute, ProductRecommendation, Product, \
+    ProductAttributeValue, ProductImage
 
 
 # Register your models here.
@@ -17,12 +18,6 @@ admin.site.register(Option)
 class ProductAttributeInline(admin.StackedInline):
     model = ProductAttribute
     extra = 2
-
-
-class ProductRecommendationInline(admin.StackedInline):
-    model = ProductRecommendation
-    extra = 2
-    fk_name = 'primary'
 
 
 class AttributeCountFilter(admin.SimpleListFilter):
@@ -46,7 +41,7 @@ class AttributeCountFilter(admin.SimpleListFilter):
 class ProductClassAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug', 'require_shipping', 'track_stock', 'attribute_count')
     list_filter = ('require_shipping', 'track_stock', AttributeCountFilter)
-    inlines = [ProductAttributeInline]
+
     actions = ['enable_track_stock']
     prepopulated_fields = {"slug": ("title",)}
 
@@ -57,4 +52,31 @@ class ProductClassAdmin(admin.ModelAdmin):
         queryset.update(track_stock=True)
 
 
+# ---------------------------------------- Product Admin ---------------------------------------
+
+
+class ProductAttributeValueInline(admin.TabularInline):
+    model = ProductAttributeValue
+    extra = 2
+
+
+class ProductImageInline(admin.StackedInline):
+    model = ProductImage
+    extra = 2
+
+
+class ProductRecommendationInline(admin.StackedInline):
+    model = ProductRecommendation
+    extra = 2
+    fk_name = 'primary'
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'parent')
+    inlines = [ProductAttributeValueInline, ProductImageInline, ProductRecommendationInline]
+    prepopulated_fields = {"slug": ("title",)}
+
+
+admin.site.register(ProductAttribute)
 admin.site.register(Category, CategoryAdmin)

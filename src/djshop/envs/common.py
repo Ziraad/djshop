@@ -45,6 +45,8 @@ INSTALLED_APPS = [
 
     'channels',
 
+    'djshop.auths.users',
+
     'djshop.apps.analytics',
     'djshop.apps.media',
     'djshop.apps.catalog',
@@ -98,6 +100,8 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
+AUTH_USER_MODEL = "users.User"
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -132,7 +136,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 
 MEDIA_ROOT = "/vol/web/media/"
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

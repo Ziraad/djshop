@@ -19,7 +19,6 @@ class ProductAttributeInline(admin.StackedInline):
     model = ProductAttribute
     extra = 2
 
-
 class AttributeCountFilter(admin.SimpleListFilter):
     title = 'Attribute Count'
     parameter_name = 'attr_count'
@@ -27,7 +26,7 @@ class AttributeCountFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         return [
             ('more_5', 'More Than 5'),
-            ('lower_5', 'lower Than 5'),
+            ('lower_5', 'Lower Than 5'),
         ]
 
     def queryset(self, request, queryset):
@@ -41,6 +40,7 @@ class AttributeCountFilter(admin.SimpleListFilter):
 class ProductClassAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug', 'require_shipping', 'track_stock', 'attribute_count')
     list_filter = ('require_shipping', 'track_stock', AttributeCountFilter)
+    inlines = [ProductAttributeInline]
 
     actions = ['enable_track_stock']
     prepopulated_fields = {"slug": ("title",)}
@@ -54,21 +54,22 @@ class ProductClassAdmin(admin.ModelAdmin):
 
 # ---------------------------------------- Product Admin ---------------------------------------
 
+class ProductCategoryInline(admin.StackedInline):
+    model = Product.categories.through
+    extra = 2
 
 class ProductAttributeValueInline(admin.TabularInline):
     model = ProductAttributeValue
     extra = 2
 
-
-class ProductImageInline(admin.StackedInline):
-    model = ProductImage
-    extra = 2
-
-
 class ProductRecommendationInline(admin.StackedInline):
     model = ProductRecommendation
     extra = 2
     fk_name = 'primary'
+
+class ProductImageInline(admin.StackedInline):
+    model = ProductImage
+    extra = 2
 
 
 @admin.register(Product)

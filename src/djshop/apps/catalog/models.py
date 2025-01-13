@@ -24,6 +24,7 @@ class Category(MP_Node):
 
 
 class OptionGroup(models.Model):
+    # دسته بندی گروه های آپشن؛ مثال: گروه سایز لباس، گروه رنگ لباس
     title = models.CharField(max_length=255, db_index=True)
 
     def __str__(self):
@@ -35,6 +36,7 @@ class OptionGroup(models.Model):
 
 
 class OptionGroupValue(models.Model):
+    # مقادیر گروه های آپشن؛ مثال: large, x large, ...
     title = models.CharField(max_length=255, db_index=True)
     group = models.ForeignKey(OptionGroup, on_delete=models.CASCADE)
 
@@ -47,10 +49,12 @@ class OptionGroupValue(models.Model):
 
 
 class ProductClass(models.Model):
+    # الگوی محصولات
     title = models.CharField(max_length=255, db_index=True)
     description = models.CharField(max_length=2048, null=True, blank=True)
     slug = models.SlugField(unique=True, allow_unicode=True)
 
+    # Warehousing
     track_stock = models.BooleanField(default=True)
     require_shipping = models.BooleanField(default=True)
 
@@ -73,6 +77,7 @@ class ProductAttribute(models.Model):
         text = 'text'
         integer = 'integer'
         float = 'float'
+        boolean = 'boolean'
         option = 'option'
         multi_option = 'multi_option'
 
@@ -189,6 +194,6 @@ class ProductImage(models.Model):
     def delete(self, *args, **kwargs):
         super().delete(*args, **kwargs)
 
-        for index, image in enumerate(self.product.image.all()):
+        for index, image in enumerate(self.product.images.all()):
             self.display_order = index
             self.image.save()
